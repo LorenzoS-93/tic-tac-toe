@@ -7,7 +7,6 @@
 html,
 body {
     background-color: #EAEDF0;
-    height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     display: flex;
     flex-direction: column;
@@ -17,7 +16,9 @@ body {
     line-height: 1.3;
 }
 
-.player-header-form {
+.player-header-form, 
+.turn,
+.result {
     text-align: center;
     background-color: #F6F7F8;
     border: 1px solid #D6D9DC;
@@ -42,8 +43,10 @@ body {
 }
 
 .player-header-form,
-.player-form {
-    width: 480px;
+.player-form,
+.turn,
+.result {
+    width: 500px;    
 }
 
 .form-row {
@@ -98,10 +101,8 @@ body {
     width: 500px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    border: 1px solid black;
     gap: 2px;
-    padding: 2px;
-    background-color: yellow;
+    background-color: Black;
 }
   
 .cell {
@@ -110,7 +111,21 @@ body {
     align-items: center;
     text-align: center;
     font-size: 2rem;
-    border: 1px solid grey;
-    background: lightyellow;
+    background: #F6F7F8;
+    cursor: pointer;
+}
+
+.play-again {
+    font-size: 16px;
+    font-weight: bold;
+
+    color: #FFFFFF;
+    background-color: #5995DA;
+
+    border: none;
+    border-radius: 3px;
+
+    padding: 10px 40px;
+    margin-top: 20px;
     cursor: pointer;
 }

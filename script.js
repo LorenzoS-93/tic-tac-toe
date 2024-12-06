@@ -81,7 +81,7 @@ function cell() {
 ** state of the game's turns
 ** and whether anybody wins
 */
-function gameManager(playerOneName = "Player One", playerTwoName = "Player Two") {
+function gameManager(playerOneName, playerTwoName) {
     /* Initialize the board, will be empty */
     const board = gameBoard();
     /* 
@@ -217,83 +217,101 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
 ** screenManager will manage what will be show to the final user
 */
 function screenManager() {
-    /* Initialize the game */
-    const game = gameManager();
-    /* Select the two div in the html file to append the child */
-    const container = document.querySelector(".container");
-    const turnDiv = document.createElement("h1");
-    turnDiv.setAttribute("class", "turn");
-    container.appendChild(turnDiv);
-    const boardDiv = document.createElement("div");
-    boardDiv.setAttribute("class", "board");
-    container.appendChild(boardDiv);
-    const resultDiv = document.createElement("h1");
-    resultDiv.setAttribute("class", "result");
-    container.appendChild(resultDiv);
-
-    /* This pattern will update the board at the end of each round */
-    const screenUpdate = () => {
-        /* Clear the board */
-        boardDiv.textContent = "";
-        /* Get the updated board with the last move and the active player */
-        const board = game.getBoard();
-        const activePlayer = game.getActivePlayer();
-        /* Display the player turn */
-        turnDiv.textContent = `${activePlayer.name}'s turn`;
-        /* Render each board cell */
-        for(const row of board) {
-            for(const cell of row) {
-                /* Create a button for each cell */
-                const cellButton = document.createElement("element");
-                cellButton.setAttribute("class", "cell");
-                /* Create a data attribute to identify the row and the column */
-                cellButton.dataset.row = board.indexOf(row);
-                cellButton.dataset.column = row.indexOf(cell);
-                /* Set the value of the cell */
-                cellButton.textContent = cell.getValue();
-                boardDiv.appendChild(cellButton);
-            }
-        }
-        resultDiv.textContent = game.getResult();
-    };
-    /* Add event listener to the board */
-    function boardClickHandler(e) {
-        if(game.getResult() === "") {
-            const selectedRow = e.target.dataset.row;
-            if(!selectedRow) return;
-            const selectedColumn = e.target.dataset.column;
-            if(!selectedColumn) return;
-
-            /* Play the turn */
-            game.playTurn(selectedRow, selectedColumn);
-        }
-        if(game.getResult() !== "") {
-            while(container.firstChild) {
-                container.removeChild(container.lastChild);
-                container.textContent = "ha funzionato";
-            }
-        }
-        
-        screenUpdate();
-    }
-    boardDiv.addEventListener("click", boardClickHandler);
-
-    /* Initial render */
-    screenUpdate();
-}
-
-function gameStartManager() {
+    
     const container = document.querySelector(".container");
     const startGameBtn = document.querySelector(".start-game");
+    const playerOneName = document.querySelector("#player-one");
+    const playerTwoName = document.querySelector("#player-two");
     function startGameHandler(event) {
         event.preventDefault();
         while(container.firstChild) {
             container.removeChild(container.lastChild);
         }
-        screenManager();
+        gameStart();
     }
 
     startGameBtn.addEventListener("click", startGameHandler);
+    /* Initialize the game */
+    function gameStart () {
+        
+        const game = gameManager(playerOneName.value, playerTwoName.value);
+        /* Select the two div in the html file to append the child */
+        
+        const turnDiv = document.createElement("h1");
+        turnDiv.setAttribute("class", "turn");
+        container.appendChild(turnDiv);
+        const boardDiv = document.createElement("div");
+        boardDiv.setAttribute("class", "board");
+        container.appendChild(boardDiv);
+        const resultDiv = document.createElement("div");
+        resultDiv.setAttribute("class", "result");
+        const playAgainBtn = document.createElement("button");
+        playAgainBtn.setAttribute("class", "play-again");
+        playAgainBtn.textContent = "Play Again";
+
+        /* This pattern will update the board at the end of each round */
+        const screenUpdate = () => {
+            /* Clear the board */
+            boardDiv.textContent = "";
+            /* Get the updated board with the last move and the active player */
+            const board = game.getBoard();
+            const activePlayer = game.getActivePlayer();
+            /* Display the player turn */
+            if (game.getResult() !== "") {
+                turnDiv.textContent = `Game's Over`;
+            }
+            else {
+                turnDiv.textContent = `${activePlayer.name}'s turn`;
+            }
+            /* Render each board cell */
+            for(const row of board) {
+                for(const cell of row) {
+                    /* Create a button for each cell */
+                    const cellButton = document.createElement("element");
+                    cellButton.setAttribute("class", "cell");
+                    /* Create a data attribute to identify the row and the column */
+                    cellButton.dataset.row = board.indexOf(row);
+                    cellButton.dataset.column = row.indexOf(cell);
+                    /* Set the value of the cell */
+                    cellButton.textContent = cell.getValue();
+                    boardDiv.appendChild(cellButton);
+                }
+            }
+            if(game.getResult() !== "") {
+                showResult();
+            }
+        };
+
+        const showResult = () => {
+            if (game.getResult() === "draw") {
+                resultDiv.textContent = "The game ended in a Draw!";
+            }
+            else {
+                resultDiv.innerHTML = `<p><b>${game.getResult()}</b> was able to best his opponent!</p><p><b>${game.getResult()}</b> is the winner!</p>`;
+            }
+            container.appendChild(resultDiv);
+            resultDiv.appendChild(playAgainBtn);
+        }
+
+        /* Add event listener to the board */
+        function boardClickHandler(e) {
+            if(game.getResult() === "") {
+                const selectedRow = e.target.dataset.row;
+                if(!selectedRow) return;
+                const selectedColumn = e.target.dataset.column;
+                if(!selectedColumn) return;
+
+                /* Play the turn */
+                game.playTurn(selectedRow, selectedColumn);
+                screenUpdate();
+            }
+        }
+        boardDiv.addEventListener("click", boardClickHandler);
+        playAgainBtn.addEventListener("click", startGameHandler);
+
+        /* Initial render */
+        screenUpdate();
+    }
 }
 
-gameStartManager();
+screenManager();
