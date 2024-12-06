@@ -43,7 +43,7 @@ function gameBoard() {
             return false;
         }
         /* Else add the tocken */
-        board[row][column].addToken(player);
+        board[row][column].setValue(player);
     };
 
     /* Method for printing the board */
@@ -65,7 +65,7 @@ function cell() {
     let value = "";
 
     /* Method for accepting a player token to modify the value of the cell */
-    const addToken = (player) => {
+    const setValue = (player) => {
         value = player;
     };
 
@@ -73,7 +73,7 @@ function cell() {
     const getValue = () => value;
 
     /* Return the necessary method so that the application can interact with the cell */
-    return {addToken, getValue};
+    return {setValue, getValue};
 }
 
 /*
