@@ -4,14 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
     <title>Tic Tac Toe</title>
 </head>
 <body>
     <div class="container">
-        <h1 class="turn"></h1>
-        <div class="board"></div>
-        <h1 class="result"></h1>
+        <div class="player-header-form">
+            <h1>Player name submission</h1>
+            <p><em>Who want's to play?</em></p>
+            <p><em>Fill out this form.</em></p>
+        </div>
+        <form action="" class="player-form">
+            <div class="form-row">
+                <label for="player-one">Player One</label>
+                <input type="text" id="player-one" name="player-one" value="Player One" placeholder="Player One" required>
+            </div>
+            <div class="form-row">
+                <label for="player-two">Player Two</label>
+                <input type="text" id="player-two" name="player-two" value="Player Two" placeholder="Player Two" required>
+            </div>
+            <div class="form-row">
+                <button class="start-game">Start</button>
+            </div>
+        </form>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>

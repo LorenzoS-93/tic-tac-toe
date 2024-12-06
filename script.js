@@ -111,7 +111,10 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
                 i++;
             }
         }
-        if(i === 3) return activePlayer.name;
+        if(i === 3) {
+            result = activePlayer.name;
+            return;
+        } 
         /* Check for tris on the column where the token is inserted */
         i = 0;
         for (const row of board.getBoard()) {
@@ -119,7 +122,10 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
                 i++;
             }
         }
-        if(i === 3) return activePlayer.name;
+        if(i === 3) {
+            result = activePlayer.name;
+            return;
+        } 
         /* Check the main diagonal only if column and row are there */
         i = 0;
         if(column === row) {
@@ -128,7 +134,10 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
                     i++;
                 }
             }
-            if (i === 3) return activePlayer.name;
+            if(i === 3) {
+                result = activePlayer.name;
+                return;
+            } 
         }
         /* Check the anti-diagonal */
         i = 0;
@@ -138,10 +147,14 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
                     i++;
                 }
             }
-            if (i === 3) return activePlayer.name;
+            if(i === 3) {
+                result = activePlayer.name;
+                return;
+            } 
         }
         i = 0;
         /* Check for Draw */
+        /* this is dumb, I just need a way to see if round is round ten then draw */
         for(r = 0; r < 3; r++) {
             for (c = 0; c < 3; c++) {
                 if(board.getBoard()[r][c].getValue() !== "") {
@@ -149,9 +162,7 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
                 }
             }
         }
-        if(i === 9) return "draw";
-        
-        return "";
+        if(i === 9) result = "draw";
     };
 
     /* 
@@ -170,6 +181,7 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
     /* Method for getting the active player */
     const getActivePlayer = () => activePlayer;
 
+    /* Method for getting the result od the game */
     const getResult = () => result;
 
     /* Method for printing the state of the board at the beginning of each round */
@@ -188,7 +200,8 @@ function gameManager(playerOneName = "Player One", playerTwoName = "Player Two")
         ** if the move is invalid the turn will not pass to the other player
         */
         if(board.setToken(row, column, getActivePlayer().token) !== false) {
-            result = checkResult(row, column, getActivePlayer());
+            checkResult(row, column, getActivePlayer())
+            if(result !== "") return;
             switchActivePlayer();
         }
         
@@ -207,9 +220,16 @@ function screenManager() {
     /* Initialize the game */
     const game = gameManager();
     /* Select the two div in the html file to append the child */
-    const turnDiv = document.querySelector(".turn");
-    const boardDiv = document.querySelector(".board");
-    const resultDiv = document.querySelector(".result");
+    const container = document.querySelector(".container");
+    const turnDiv = document.createElement("h1");
+    turnDiv.setAttribute("class", "turn");
+    container.appendChild(turnDiv);
+    const boardDiv = document.createElement("div");
+    boardDiv.setAttribute("class", "board");
+    container.appendChild(boardDiv);
+    const resultDiv = document.createElement("h1");
+    resultDiv.setAttribute("class", "result");
+    container.appendChild(resultDiv);
 
     /* This pattern will update the board at the end of each round */
     const screenUpdate = () => {
@@ -238,7 +258,6 @@ function screenManager() {
     };
     /* Add event listener to the board */
     function boardClickHandler(e) {
-        console.log(game.getResult());
         if(game.getResult() === "") {
             const selectedRow = e.target.dataset.row;
             if(!selectedRow) return;
@@ -247,6 +266,12 @@ function screenManager() {
 
             /* Play the turn */
             game.playTurn(selectedRow, selectedColumn);
+        }
+        if(game.getResult() !== "") {
+            while(container.firstChild) {
+                container.removeChild(container.lastChild);
+                container.textContent = "ha funzionato";
+            }
         }
         
         screenUpdate();
@@ -257,4 +282,18 @@ function screenManager() {
     screenUpdate();
 }
 
-screenManager();
+function gameStartManager() {
+    const container = document.querySelector(".container");
+    const startGameBtn = document.querySelector(".start-game");
+    function startGameHandler(event) {
+        event.preventDefault();
+        while(container.firstChild) {
+            container.removeChild(container.lastChild);
+        }
+        screenManager();
+    }
+
+    startGameBtn.addEventListener("click", startGameHandler);
+}
+
+gameStartManager();
