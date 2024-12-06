@@ -57,9 +57,9 @@ function gameBoard() {
 
 /*
 ** A cell rappresent one square of the board
-** 0: no token in the cell
-** 1: player1 token in the square
-** 2: player2 token in the square
+** "": no token in the cell
+** X: player1 token in the square
+** O: player2 token in the square
 */
 function cell() {
     let value = "";
@@ -218,10 +218,16 @@ function gameManager(playerOneName, playerTwoName) {
 */
 function screenManager() {
     
+    /* Get all the DOM element */
     const container = document.querySelector(".container");
     const startGameBtn = document.querySelector(".start-game");
     const playerOneName = document.querySelector("#player-one");
     const playerTwoName = document.querySelector("#player-two");
+    /* 
+    ** Handle the beginnig of the game 
+    ** Remove old DOM element that are no more neccesary
+    ** Restart/start the game
+    */
     function startGameHandler(event) {
         event.preventDefault();
         while(container.firstChild) {
@@ -229,14 +235,13 @@ function screenManager() {
         }
         gameStart();
     }
-
     startGameBtn.addEventListener("click", startGameHandler);
     /* Initialize the game */
     function gameStart () {
         
         const game = gameManager(playerOneName.value, playerTwoName.value);
-        /* Select the two div in the html file to append the child */
         
+        /* Create the board */
         const turnDiv = document.createElement("h1");
         turnDiv.setAttribute("class", "turn");
         container.appendChild(turnDiv);
@@ -256,7 +261,7 @@ function screenManager() {
             /* Get the updated board with the last move and the active player */
             const board = game.getBoard();
             const activePlayer = game.getActivePlayer();
-            /* Display the player turn */
+            /* Display the player turn or signal the end of the game */
             if (game.getResult() !== "") {
                 turnDiv.textContent = `Game's Over`;
             }
@@ -282,6 +287,10 @@ function screenManager() {
             }
         };
 
+        /* 
+        ** ShoW the final result of the match in an appropriate div
+        ** In the same div insert the play again button
+        */
         const showResult = () => {
             if (game.getResult() === "draw") {
                 resultDiv.innerHTML = `<p>The game ended in a <b>Draw</b>!</p>`;
