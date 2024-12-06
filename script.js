@@ -284,7 +284,7 @@ function screenManager() {
 
         const showResult = () => {
             if (game.getResult() === "draw") {
-                resultDiv.innerHTML = "<p>The game ended in a <b>Draw</b>!</p>";
+                resultDiv.innerHTML = `<p>The game ended in a <b>Draw</b>!</p>`;
             }
             else {
                 resultDiv.innerHTML = `<p><b>${game.getResult()}</b> was able to best his opponent!</p><p><b>${game.getResult()}</b> is the winner!</p>`;
